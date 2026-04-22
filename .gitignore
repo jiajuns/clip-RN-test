@@ -8,9 +8,9 @@ tests/data/
 *.pt
 
 # Local RN50 inference / benchmark artifacts
-data/
+# Keep extracted data/ and result/ tracked for this fork, but keep the test-only downloads and the oversized CIFAR-10 archive ignored.
+data/cifar-10-python.tar.gz
 data_test/
-result/
 .env/
 
 # Byte-compiled / optimized / DLL files

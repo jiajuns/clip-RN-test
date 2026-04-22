@@ -1,0 +1,13 @@
+device: cpu
+benchmark: CIFAR-10 test split
+data_root: /home/jj/resnet-clip-test/data
+num_images: 50
+warmup: 3
+text_count: 10
+metrics:
+text_encode_seconds: 0.073600
+avg_preprocess_seconds: 0.000742
+avg_image_encode_seconds: 0.024803
+avg_score_seconds: 0.000048
+avg_total_seconds_per_image: 0.025618
+fps: 39.035

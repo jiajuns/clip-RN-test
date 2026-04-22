@@ -23,7 +23,17 @@ HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY
   --text "a diagram" "a dog" "a cat"
 ```
 
-CIFAR-10 benchmark:
+### CIFAR-10 benchmark
+
+Dataset used by the benchmark in this fork:
+
+- Dataset: CIFAR-10
+- Split used by the benchmark code: official `test` split
+- Loader behavior: `torchvision.datasets.CIFAR10(..., train=False, download=True)`
+- Default local dataset directory for the benchmark command below: `data/`
+- Prompt set used when `--text` is omitted: the 10 CIFAR-10 class names in `infer_rn50_cn.py`
+
+Benchmark command:
 
 ```bash
 HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY= no_proxy= \
@@ -33,6 +43,14 @@ HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY
   --warmup 3 \
   --data-root data
 ```
+
+How this benchmark is used in this repo:
+
+- The script downloads or reuses CIFAR-10 under `data/`.
+- It encodes the 10 class prompts once, then runs RN50 image inference on `warmup + num_images` images from the CIFAR-10 test split.
+- Warmup images are excluded from the reported averages.
+- A sample benchmark output captured from this repo is stored at `result/rn50_cifar10_benchmark_20260422_141828.txt`.
+- The current captured result was produced on `device: cpu` with `num_images: 50` and `warmup: 3`.
 
 Benchmark output fields:
 
