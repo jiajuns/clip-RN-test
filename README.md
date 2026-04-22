@@ -1,5 +1,82 @@
 # OpenCLIP
 
+## Fork / local additions
+
+This repo is based on the upstream `mlfoundations/open_clip` project. The upstream README is kept below, and this section only documents the local RN50 inference and CIFAR-10 benchmark work added in this fork.
+
+### Useful local files
+
+- `infer_rn50_cn.py`: local CLI for RN50 single-image inference and CIFAR-10 benchmark.
+- `tests/test_infer_rn50_cn.py`: smoke tests for the local CLI arguments and benchmark output.
+- `RUN_CN.md`: Chinese quick start notes for the local RN50 workflow.
+
+### How to start
+
+Run commands from the repository root. In this environment, use `python3` or `.env/bin/python`, not `python`.
+
+Single-image inference:
+
+```bash
+HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY= no_proxy= \
+.env/bin/python infer_rn50_cn.py \
+  --image docs/CLIP.png \
+  --text "a diagram" "a dog" "a cat"
+```
+
+CIFAR-10 benchmark:
+
+```bash
+HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY= no_proxy= \
+.env/bin/python infer_rn50_cn.py \
+  --benchmark-cifar10 \
+  --num-images 50 \
+  --warmup 3 \
+  --data-root data
+```
+
+Benchmark output fields:
+
+- `text_encode_seconds`: one-time text encoding time for the candidate prompts.
+- `avg_preprocess_seconds`: average image preprocessing time per image.
+- `avg_image_encode_seconds`: average RN50 image tower forward time per image.
+- `avg_score_seconds`: average image-text similarity plus softmax time per image.
+- `avg_total_seconds_per_image`: end-to-end per-image time inside the benchmark loop.
+- `fps`: reciprocal of `avg_total_seconds_per_image`.
+
+### Current validated versions
+
+- Python: `3.10.12`
+- Package version in this repo: `open_clip_torch 4.0.0.dev0`
+- Python requirement declared by the project: `>=3.9`
+- Local script model path: `RN50` with `pretrained="openai"`
+- Local verification command:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .env/bin/python -m pytest tests/test_infer_rn50_cn.py
+```
+
+See also `RUN_CN.md` for the Chinese quick start.
+
+### ResNet-20 likely edit points
+
+If you later replace the RN50 visual tower with a ResNet-20 style variant, start here:
+
+- `src/open_clip/modified_resnet.py`: the current ResNet-style visual tower implementation used by RN models.
+- `src/open_clip/model.py`: `_build_vision_tower()` decides when `ModifiedResNet` is constructed.
+- `src/open_clip/model_configs/RN50.json`: the RN50 reference config for layers, width, image size, and text tower settings.
+- `src/open_clip/pretrained.py`: only touch this if you need to register a new pretrained key or checkpoint source.
+
+### Local files and directories that should not be committed
+
+These paths are local downloads, caches, or experiment outputs and should stay ignored:
+
+- `data/`
+- `data_test/`
+- `result/`
+- `.env/`
+- `.pytest_cache/`
+- `__pycache__/`
+
 [[Paper]](https://arxiv.org/abs/2212.07143) [[Citations]](#citing) [[Clip Colab]](https://colab.research.google.com/github/mlfoundations/open_clip/blob/master/docs/Interacting_with_open_clip.ipynb) [[Coca Colab]](https://colab.research.google.com/github/mlfoundations/open_clip/blob/master/docs/Interacting_with_open_coca.ipynb)
 [![pypi](https://img.shields.io/pypi/v/open_clip_torch.svg)](https://pypi.python.org/pypi/open_clip_torch)
 

@@ -7,6 +7,12 @@ results/
 tests/data/
 *.pt
 
+# Local RN50 inference / benchmark artifacts
+data/
+data_test/
+result/
+.env/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
